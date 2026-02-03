@@ -6,9 +6,26 @@ import ProductList from "./ProductList";
 import { Product } from "@/types/product";
 import {Filters} from "@/types/filter";
 
+type SortOrder = "normal" | "asc" | "desc";
+
+
 export default function ClientCatalog({ products }: { products: Product[] }) {
     const minPrice = Math.min(...products.map(p => p.price));
     const maxPrice = Math.max(...products.map(p => p.price));
+    const [order, setOrder] = useState<SortOrder>("normal");
+
+
+    const sortedProducts = [...products].sort((a, b) => {
+        if (order === "normal") return 0;
+        if (order === "asc") return a.price - b.price;
+        return b.price - a.price;
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newOrder = e.target.value as SortOrder;
+        setOrder(newOrder);
+    };
+
 
     const [filters, setFilters] = useState<Filters>({
         brands: [],
@@ -39,7 +56,7 @@ export default function ClientCatalog({ products }: { products: Product[] }) {
     };
 
     const filteredProducts = useMemo(() => {
-        return products.filter(p => {
+        return sortedProducts.filter(p => {
             const { brands, release, dossage, quantityPerPackage, isByPrescription,
                 manufacturer, country, storageTemperature, price } = filters;
 
@@ -55,7 +72,7 @@ export default function ClientCatalog({ products }: { products: Product[] }) {
 
             return priceOk && brandsOk && releaseOk && dossageOk && quantityOk && prescriptionOk && manufacturerOk && countryOk && storageOk;
         });
-    }, [products, filters]);
+    }, [products, filters, sortedProducts]);
 
     function renderArray(key: keyof Filters, values: string[]) {
         return values.map(value => (
@@ -85,7 +102,7 @@ export default function ClientCatalog({ products }: { products: Product[] }) {
 
     return (
         <div className="flex gap-4 justify-center flex-col ">
-            <div>
+            <div className="flex justify-between">
                 <div className="flex flex-wrap gap-2">
                     {(filters.price[0] !== 0 || filters.price[1] !== 0) && (
                         <FilterTag label={`Цена: ${filters.price[0]} – ${filters.price[1]}`}/>
@@ -99,6 +116,17 @@ export default function ClientCatalog({ products }: { products: Product[] }) {
                     {renderArray('country', filters.country)}
                     {renderArray('storageTemperature', filters.storageTemperature)}
 
+                </div>
+                <div>
+                    <select
+                        value={order}
+                        onChange={handleChange}
+                        className="border px-2 py-1 rounded bg-white"
+                    >
+                        <option value="normal">По релевантности</option>
+                        <option value="asc">Сначала дешёвые</option>
+                        <option value="desc">Сначала дорогие</option>
+                    </select>
                 </div>
             </div>
             <div className='flex justify-center '>

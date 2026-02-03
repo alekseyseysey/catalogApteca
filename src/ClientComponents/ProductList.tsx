@@ -34,10 +34,6 @@ export default function ProductList({products, category}: ProductListProps) {
     const startIndex = (safePage - 1) * itemPerPage;
     const currentProducts = products.slice(startIndex, startIndex + itemPerPage);
 
-    useEffect(() => {
-        console.log(currentProducts.length)
-    }, [currentProducts]);
-
 
     return (
         <div>{currentProducts.length > 0 ? <div>
