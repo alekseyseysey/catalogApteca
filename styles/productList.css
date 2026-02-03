@@ -1,0 +1,12 @@
+.productList{
+    display: grid;
+
+    grid-column: 2/-2;
+}
+
+.productCard{
+    width: 420px;
+}
+
+.productFilterWrapper{
+}
