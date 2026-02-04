@@ -13,13 +13,18 @@ export default function ClientCatalog({ products }: { products: Product[] }) {
     const minPrice = Math.min(...products.map(p => p.price));
     const maxPrice = Math.max(...products.map(p => p.price));
     const [order, setOrder] = useState<SortOrder>("normal");
+    const [sortedProducts, setSortedProducts] = useState<Product[]>(products);
 
 
-    const sortedProducts = [...products].sort((a, b) => {
-        if (order === "normal") return 0;
-        if (order === "asc") return a.price - b.price;
-        return b.price - a.price;
-    });
+
+    useEffect(() => {
+        const sortedProducts = [...products].sort((a, b) => {
+            if (order === "normal") return 0;
+            if (order === "asc") return a.price - b.price;
+            return b.price - a.price;
+        });
+        setSortedProducts(sortedProducts);
+    }, [order, products]);
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newOrder = e.target.value as SortOrder;

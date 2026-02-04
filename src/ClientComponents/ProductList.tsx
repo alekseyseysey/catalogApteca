@@ -36,7 +36,7 @@ export default function ProductList({products, category}: ProductListProps) {
 
 
     return (
-        <div>{currentProducts.length > 0 ? <div>
+        <div className="min-w-[1200px]">{currentProducts.length > 0 ? <div>
             <div className="grid grid-cols-4 gap-4 p-4 min-w-[800px]">
                 {currentProducts.slice(0, 12).map(p => (
                     <div key={p.id} className="bg-white rounded shadow p-2 max-w-[300px] min-h-[340px] flex flex-col justify-between">
